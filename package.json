@@ -1,6 +1,9 @@
 {
   "name": "folderize",
   "scripts": {
+    "db:generate": "prisma generate --no-hints",
+    "db:migrate:dev": "prisma migrate dev --name init",
+    "db:migrate:deploy": "prisma migrate deploy",
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {

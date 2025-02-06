@@ -12,3 +12,35 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Folder {
+  id             Int      @id @default(autoincrement())
+  parentFolderId Int?     @map("parent_folder_id")
+  name           String
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  parentFolder Folder?  @relation("FolderHierarchy", fields: [parentFolderId], references: [id])
+  subFolders   Folder[] @relation("FolderHierarchy")
+  files        File[]
+
+  @@index([parentFolderId, name])
+  @@index([createdAt])
+  @@map("folders")
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  folderId  Int      @map("folder_id")
+  name      String
+  size      Int
+  type      String?
+  filePath  String   @map("file_path")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  folder Folder @relation(fields: [folderId], references: [id])
+
+  @@index([folderId, name])
+  @@index([createdAt])
+  @@map("files")
+}
